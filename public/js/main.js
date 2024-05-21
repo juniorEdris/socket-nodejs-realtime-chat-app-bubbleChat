@@ -2,6 +2,8 @@ const chatForm = document.getElementById("chat-form");
 const chatMessages = document.querySelector(".chat-messages");
 const roomName = document.getElementById("room-name");
 const userList = document.getElementById("users");
+const activity = document.querySelector(".activity");
+const msgInput = chatForm.elements.msg;
 
 const socket = io();
 
@@ -13,7 +15,24 @@ const { username, room } = Qs.parse(location.search, {
 // Join a room
 socket.emit("joinroom", { username, room });
 
+// Set activity msg
+msgInput.addEventListener("keypress", () => {
+  socket.emit("activity", username);
+});
+
+let activityTimer;
+socket.on("activity", (name) => {
+  activity.innerHTML = `<p><span class="username">${name}</span> is typing...</p>`;
+
+  // Clear after 1 seconds
+  clearTimeout(activityTimer);
+  activityTimer = setTimeout(() => {
+    activity.innerHTML = "";
+  }, 1500);
+});
+
 socket.on("message", (message) => {
+  activity.innerHTML = "";
   outputChatMsg(message);
 
   //   Scroll down
@@ -47,7 +66,7 @@ const outputChatMsg = (message) => {
   const p = document.createElement("p");
   p.classList.add("meta");
   p.innerText = message.username;
-  p.innerHTML += `<span>${message.time}</span>`;
+  p.innerHTML += ` <span>${message.time}</span>`;
   div.appendChild(p);
   const para = document.createElement("p");
   para.classList.add("text");

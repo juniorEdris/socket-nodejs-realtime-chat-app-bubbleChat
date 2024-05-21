@@ -179,6 +179,11 @@ a {
   width: 100%;
 }
 
+.activity{
+  margin: 5px 0;
+  color: #fff;
+}
+
 @media (max-width: 700px) {
   .chat-main {
     display: block;

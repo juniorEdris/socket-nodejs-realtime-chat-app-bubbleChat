@@ -1,21 +1,30 @@
 const path = require(`path`);
-const http = require(`http`);
 
 const express = require(`express`);
-const socketio = require("socket.io");
+const { Server } = require("socket.io");
 const formatMessage = require("./public/utils/message");
 const { userJoin, getCurrentUser } = require("./public/utils/user");
 const app = express();
 
-const server = http.createServer(app);
-const io = socketio(server);
-
 // SET STATIC CLIENT FOLDER
 app.use(express.static(path.join(__dirname, `public`)));
+
+const PORT = process.env.PORT || 3500;
+
+const server = app.listen(PORT, () => console.log(`Started At Port ${PORT}`));
+
+// const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin:
+      process.env.NODE_ENV === "production" ? false : ["http//:localhost:3000"],
+  },
+});
 
 const botName = `Chatbot`;
 
 io.on("connection", (socket) => {
+  console.log("socket user", socket.id);
   // on join room
   socket.on("joinroom", ({ username, room }) => {
     // Make a user join
@@ -38,12 +47,13 @@ io.on("connection", (socket) => {
     io.emit("message", formatMessage(user.username, msg));
   });
 
+  // Listen for activity
+  socket.on("activity", (name) => {
+    socket.broadcast.emit("activity", name);
+  });
+
   //   Runs when a user disconnects
   socket.on("disconnect", () => {
     io.emit("message", formatMessage(botName, `A User has left the chat!`));
   });
 });
-
-const PORT = 3000 || process.env.PORT;
-
-server.listen(PORT, () => console.log(`Started At Port ${PORT}`));
