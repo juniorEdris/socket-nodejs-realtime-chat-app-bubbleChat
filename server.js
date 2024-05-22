@@ -9,7 +9,6 @@ const {
   getRoomUsers,
   userLeave,
 } = require("./public/utils/user");
-const { emit } = require("process");
 const app = express();
 
 // SET STATIC CLIENT FOLDER
