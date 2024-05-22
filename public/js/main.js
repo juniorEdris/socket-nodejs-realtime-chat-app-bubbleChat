@@ -20,6 +20,13 @@ msgInput.addEventListener("keypress", () => {
   socket.emit("activity", username);
 });
 
+// update room name and user list
+socket.on("roomUsers", ({ room, users }) => {
+  console.log({ room, users });
+  roomName.innerText = room;
+  outputUsersList(users);
+});
+
 let activityTimer;
 socket.on("activity", (name) => {
   activity.innerHTML = `<p><span class="username">${name}</span> is typing...</p>`;
@@ -73,4 +80,20 @@ const outputChatMsg = (message) => {
   para.innerText = message.text;
   div.appendChild(para);
   document.querySelector(".chat-messages").appendChild(div);
+};
+
+const outputUsersList = (users = []) => {
+  if (!users.length) {
+    return;
+  }
+
+  userList.innerHTML = `${users
+    .map((item) => `<li>${item?.username}</li>`)
+    .join("")}`;
+  // users.forEach((item) => {
+  //   // const li = document.createElement("li");
+  //   // li.textContent = item.username;
+  //   // userList.appendChild(li);
+
+  // });
 };
