@@ -5,7 +5,7 @@ const userList = document.getElementById("users");
 const activity = document.querySelector(".activity");
 const msgInput = chatForm.elements.msg;
 
-const socket = io();
+const socket = io(`https://bubblechat-alpha.vercel.app/`);
 
 // get username and room name
 const { username, room } = Qs.parse(location.search, {
