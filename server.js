@@ -22,9 +22,7 @@ const server = app.listen(PORT, () => console.log(`Started At Port ${PORT}`));
 const io = new Server(server, {
   cors: {
     origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://bubblechat-alpha.vercel.app/"]
-        : ["http//:localhost:3000"],
+      process.env.NODE_ENV === "production" ? false : ["http//:localhost:3000"],
   },
 });
 
