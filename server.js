@@ -14,7 +14,7 @@ const app = express();
 // SET STATIC CLIENT FOLDER
 app.use(express.static(path.join(__dirname, `public`)));
 
-const PORT = process.env.PORT || 3500;
+const PORT = process.env.PORT;
 
 const server = app.listen(PORT, () => console.log(`Started At Port ${PORT}`));
 
